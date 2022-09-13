@@ -49,6 +49,7 @@ app.post("/users", async (req, res) => {
         })),
       },
     },
+    include: { hobbies: true }
   });
   res.send(users);
 });
@@ -95,6 +96,35 @@ app.patch("/hobbies/:id", async (req, res) => {
     include: { users: true },
   });
   res.send(hobby);
+});
+app.patch("/hobbies/:id", async (req, res) => {
+  // const hobby = await prisma.hobby.update({
+  //   where: { id: Number(req.params.id) },
+  //   data: req.body,
+  //   include: { users: true },
+  // });
+  // res.send(hobby);
+  //updates hobby to a user
+  const user = await prisma.user.update({
+    where: { full_name: req.body.full_name },
+    data: {
+      hobbies: {
+        connectOrCreate: {
+          where: { name: req.body.hobbyName },
+          create: {
+            name: req.body.hobbyName,
+            image_URL: req.body.image_URL,
+            active: req.body.active,
+          },
+        },
+      },
+    },
+    include: {
+      hobbies: true,
+    },
+  });
+
+  res.send(user);
 });
 
 app.listen(port, () => {
