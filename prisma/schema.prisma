@@ -12,17 +12,16 @@ datasource db {
 
 model User {
   id        Int     @id @default(autoincrement())
-  full_name String
-  photo_URL String
-  email     String
+  full_name String  @unique
+  photo_URL String? @unique
+  email     String  @unique
   hobbies   Hobby[]
 }
 
 model Hobby {
   id        Int     @id @default(autoincrement())
-  name      String
-  image_URL String
+  name      String  @unique
+  image_URL String? @unique
   active    Boolean
-  User      User    @relation(fields: [userId], references: [id])
-  userId    Int
+  users     User[]
 }
